@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280414475439",
+    "project_id": "putain-8c812",
+    "storage_bucket": "putain-8c812.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280414475439:android:69d02d5d80307b16e9705a",
+        "android_client_info": {
+          "package_name": "com.example.shopnewversion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAQxXjiq8HiC2s-ntiiYeqjr5yqKgGdOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
