@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shopnewversion/controllers/login_page_controller.dart';
+import 'package:shopnewversion/views/registerviews/register_standard.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _Login_screenState extends State<LoginScreen> {
   final LoginController _controller = LoginController();
+  
   bool hide = true;
 
   @override
@@ -62,6 +64,7 @@ class _Login_screenState extends State<LoginScreen> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
+                    
                   ),
                 ),
               ),
@@ -179,7 +182,7 @@ class _Login_screenState extends State<LoginScreen> {
                         backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(2, 37, 70, 0.976))
                       ),
                       onPressed: () { 
-                        _controller.loginWithFaceBook();
+                        _controller.loginWithFaceBook(context);
                        },
                       child: Row(
                         children: [
@@ -203,10 +206,10 @@ class _Login_screenState extends State<LoginScreen> {
           ),),
               TextButton(
                 onPressed: (){
-                 /* Navigator.push(
+                  Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  const RegisterScreen()),
-          );*/
+            MaterialPageRoute(builder: (context) =>   RegisterStandard()),
+          );
                 }, 
                 child:const Text('Sign up',
                 style: TextStyle(
