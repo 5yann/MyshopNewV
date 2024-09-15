@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shopnewversion/views/registerviews/register_with_facebook_or_google.dart';
+import 'package:shopnewversion/views/registerviews/register_with_facebook_or_google_view.dart';
 
 import '../models/Usermodel.dart';
 

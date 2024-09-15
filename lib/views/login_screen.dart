@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shopnewversion/controllers/login_page_controller.dart';
-import 'package:shopnewversion/views/registerviews/register_standard.dart';
+import 'package:shopnewversion/views/registerviews/register_standard_view.dart';
 
 
 class LoginScreen extends StatefulWidget {

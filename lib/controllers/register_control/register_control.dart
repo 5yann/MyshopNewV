@@ -3,15 +3,28 @@
 // ignore_for_file: non_constant_identifier_names
 
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shopnewversion/models/registermodel/registermodel.dart';
 
 class RegisterControl {
-  final UserRegister userRegister = UserRegister(id: 0, name: '', enterpriseName: '', adress: '', description: '', email: '', phoneNumber: '',uId: '');
+  final UserRegister userRegister = UserRegister(id: 0, name: '', enterpriseName: '', adress: '', description: '', email: '', phoneNumber: '',country: '',currency: '', uId: '');
   String error ='';
   String Password='';
+  List<Map<String, String>> countries = [];
+  List<String> countries_list =[];
+  String? selectedCountry;
+  String selectedCurrency = '';
+  String selectedPrefix = '';
+  String selectedIsocode = '';
+  PhoneNumber phoneNumber = PhoneNumber(isoCode: 'US');
+  String dropmenuVal='';
+
+
    void updateUsername(String name) {
     userRegister.name=name;
   }
@@ -34,12 +47,45 @@ class RegisterControl {
    void updatePassword(String password) {
    Password=password;
   }
+   void updatecountry(String Country) {
+  userRegister.country=Country;
+  }
+   void updatecurrency(String Currency) {
+  
+  String incorrectSymbol = countries.firstWhere(
+                          (map) => map['country'] == Currency,
+    orElse: () => {}  
+                        )['currencySymbol'].toString();
+                        selectedCurrency =utf8.decode(incorrectSymbol.codeUnits);
+                        print(selectedCurrency);
+             userRegister.currency=selectedCurrency;
+                         
+  }
    void updateuid(String uid) {
     userRegister.uId=uid;
   }
+   void updateprefix(String prefix) {
+   selectedPrefix = countries.firstWhere(
+                          (map) => map['country'] == prefix,
+    orElse: () => {}  
+                        )['prefix'].toString();
+                        print(selectedPrefix);
+  }
+   void updateisoCod(String isoCod) {
+   selectedIsocode= countries.firstWhere(
+                          (country) => country['country'] == isoCod,
+                        )['isoCode']!;
+                        print(isoCod);
+  }
+  void updatePhone(String ph){
+    phoneNumber = PhoneNumber(isoCode: selectedIsocode,phoneNumber: ph);
+    userRegister.phoneNumber=phoneNumber.phoneNumber.toString();
+  }
+  
+  void updatedropdowval(String val) {
+   dropmenuVal=val;
+  }
 
-  
-  
   Future RegisterWithEmailAndPassword(BuildContext context)async{
     try {
   
@@ -105,5 +151,56 @@ Future Register_With_Facebook_Google()async{
     // other errors
   }
 }
+
+
+ Future<void> fetchCountries() async {
+    final response = await http.get(Uri.parse('https://restcountries.com/v3.1/all'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+
+     
+        countries = data.map((country) {
+          
+          String countryName = country['name']['common'];
+          Map<String, dynamic>? currencies = country['currencies'];
+        String currencyCode = 'N/A';
+        String currencySymbol = 'N/A';
+
+        if (currencies != null) {
+          currencyCode = currencies.keys.first; // Code de la devise
+          currencySymbol = currencies[currencyCode]['symbol'] ?? 'N/A'; // Symbole de la devise
+        }
+          // Pour gérer les cas où le pays n'a pas de devise
+          String prefix = country['idd'] != null
+    ? (country['idd']['root'] ?? '') + // Utilise une chaîne vide si 'root' est null
+      (country['idd']['suffixes']?.isNotEmpty == true 
+        ? (country['idd']['suffixes']?.first ?? '') 
+        : '') // Utilise une chaîne vide si 'suffixes' est null ou vide
+    : 'N/A'; // Valeur par défaut si 'idd' est null
+
+             
+          String isoCode = country['cca2']; // Code pays ISO (2 lettres) pour PhoneNumber
+          return {
+            'country': countryName,
+            'currencySymbol': currencySymbol,
+            'prefix': prefix,
+            'isoCode': isoCode,
+          };
+        }).toList();
+      
+    } else {
+      throw Exception('Failed to load countries');
+    }
+  }
   
+Future<void> updatelist()async{
+    await fetchCountries();
+    countries_list= countries.where((map) => map.containsKey('country')) 
+      .map((map) => map['country'] as String)     
+      .toList();
+      countries_list.sort();
+    updatedropdowval(countries_list[0]);
+}
+
 }

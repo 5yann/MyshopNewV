@@ -8,6 +8,8 @@ class UserRegister {
     String  email;
     String  uId;
     String  phoneNumber;
+    String  country;
+    String  currency;
   
  
      
@@ -19,6 +21,8 @@ class UserRegister {
     required this.description,
     required this.email,
     required this.phoneNumber,
+    required this.country,
+    required this.currency,
     required this.uId});
 
 
@@ -31,6 +35,8 @@ class UserRegister {
      'email':email,
      'description':description,
      'phoneNumber' : phoneNumber,
+     'country' : country,
+     'currency' : currency,
      'uId': uId
     };
   }
@@ -44,6 +50,8 @@ class UserRegister {
       email: doc['email'],
       description:doc['description'],
       phoneNumber: doc['phoneNumber'],
+      country: doc['country'],
+      currency : doc['currency'],
       uId: doc['uId']
     );
   }
