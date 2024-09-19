@@ -1,6 +1,6 @@
 
 
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 
 import 'dart:convert';
@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shopnewversion/models/registermodel/registermodel.dart';
+import 'package:shopnewversion/views/homepageViews/homepage_view.dart';
 
 class RegisterControl {
   final UserRegister userRegister = UserRegister(id: 0, name: '', enterpriseName: '', adress: '', description: '', email: '', phoneNumber: '',country: '',currency: '', uId: '');
@@ -99,10 +100,10 @@ class RegisterControl {
     await   FirebaseFirestore.instance.collection('Users').doc(user.uid).set(userRegister.toMap());
     print("new user registered and database created!");
     // the user database has been perfectly created on firebabse
-     /*Navigator.pushReplacement(
+     Navigator.pushReplacement(
                           context,
-              MaterialPageRoute(builder: (context) => const Homepage()),
-            );*/
+              MaterialPageRoute(builder: (context) =>  HomePage(storeName: userRegister.enterpriseName,)),
+            );
 
   } on FirebaseException catch (e) {
     print("error on database creation : ${e.message}");
@@ -168,19 +169,19 @@ Future Register_With_Facebook_Google()async{
         String currencySymbol = 'N/A';
 
         if (currencies != null) {
-          currencyCode = currencies.keys.first; // Code de la devise
-          currencySymbol = currencies[currencyCode]['symbol'] ?? 'N/A'; // Symbole de la devise
+          currencyCode = currencies.keys.first; 
+          currencySymbol = currencies[currencyCode]['symbol'] ?? 'N/A'; 
         }
-          // Pour gérer les cas où le pays n'a pas de devise
+          
           String prefix = country['idd'] != null
-    ? (country['idd']['root'] ?? '') + // Utilise une chaîne vide si 'root' est null
+    ? (country['idd']['root'] ?? '') + 
       (country['idd']['suffixes']?.isNotEmpty == true 
         ? (country['idd']['suffixes']?.first ?? '') 
-        : '') // Utilise une chaîne vide si 'suffixes' est null ou vide
-    : 'N/A'; // Valeur par défaut si 'idd' est null
+        : '') 
+    : 'N/A'; 
 
              
-          String isoCode = country['cca2']; // Code pays ISO (2 lettres) pour PhoneNumber
+          String isoCode = country['cca2'];
           return {
             'country': countryName,
             'currencySymbol': currencySymbol,

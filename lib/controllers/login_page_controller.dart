@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shopnewversion/models/registermodel/registermodel.dart';
+import 'package:shopnewversion/views/homepageViews/homepage_view.dart';
 import 'package:shopnewversion/views/registerviews/register_with_facebook_or_google_view.dart';
 
 import '../models/Usermodel.dart';
@@ -22,7 +24,7 @@ final UserModel user = UserModel(username: '', password: '');
   }
 
   //connexion with email and password
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
    // await SignInWithEmailAndPassword(user.username, user.password);
     try {
     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -31,6 +33,12 @@ final UserModel user = UserModel(username: '', password: '');
     );
     // Connexion successful or not
     print("Connecté: ${userCredential.user!.email}");
+    final querySnapshot = await   FirebaseFirestore.instance.collection('Users').doc(userCredential.user!.uid).get();
+    final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
+     Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+      );
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('Aucun utilisateur trouvé pour cet email.');
@@ -55,10 +63,41 @@ final UserModel user = UserModel(username: '', password: '');
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        await FirebaseAuth.instance.signInWithCredential(credential);
+        UserCredential userCredential=   await FirebaseAuth.instance.signInWithCredential(credential);
 
         print('success!');
+         User? userC =userCredential.user;
+        bool isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
+        updateUsername(userC?.email??'');
+// if his userDoc alredy exist
+          DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(userC?.uid).get();
+
+      if (isNewUser || !userDoc.exists) {
+        print('not register yet!');
+  // registerwith Faceb or Goog
+           Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => RegisterWithFacebookOrGoogle(email:user.username , uid:userC?.uid??'')),
+      );
+         } else {
+  // homepage redirection
+        final querySnapshot = await   FirebaseFirestore.instance.collection('Users').doc(userCredential.user!.uid).get();
+        final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
+     Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+      );
+      //  Navigator.pushNamed(context, '/homepage');
       }
+
+        
+        print('success!');
+
+      } else {
+        // Gestion des erreurs ou annulation de la connexion
+        print('fail');
+      }
+      
     } catch (e) {
       print('Erreur de connexion avec Google: $e');
       print('fail');
@@ -89,6 +128,12 @@ final UserModel user = UserModel(username: '', password: '');
       );
          } else {
   // homepage redirection
+        final querySnapshot = await   FirebaseFirestore.instance.collection('Users').doc(userCredential.user!.uid).get();
+        final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
+     Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+      );
       //  Navigator.pushNamed(context, '/homepage');
       }
 
