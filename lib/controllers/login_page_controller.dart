@@ -37,7 +37,7 @@ final UserModel user = UserModel(username: '', password: '');
     final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
      Navigator.push(
           context,
-        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+        MaterialPageRoute(builder: (context) => HomePage(storeOwner: userRegister )),
       );
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -85,7 +85,7 @@ final UserModel user = UserModel(username: '', password: '');
         final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
      Navigator.push(
           context,
-        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+        MaterialPageRoute(builder: (context) => HomePage(storeOwner: userRegister )),
       );
       //  Navigator.pushNamed(context, '/homepage');
       }
@@ -132,7 +132,7 @@ final UserModel user = UserModel(username: '', password: '');
         final UserRegister userRegister = UserRegister.fromDocument(querySnapshot);
      Navigator.push(
           context,
-        MaterialPageRoute(builder: (context) => HomePage(storeName: userRegister.enterpriseName )),
+        MaterialPageRoute(builder: (context) => HomePage(storeOwner: userRegister )),
       );
       //  Navigator.pushNamed(context, '/homepage');
       }

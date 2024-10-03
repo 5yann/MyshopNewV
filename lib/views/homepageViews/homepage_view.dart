@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shopnewversion/models/registermodel/registermodel.dart';
 import 'package:shopnewversion/views/categoriesView/categoriesmainPage.dart';
+import 'package:shopnewversion/views/itemsViews/itemMainpage.dart';
+import 'package:shopnewversion/views/suppliersView/supplierList.dart';
 
 class HomePage extends StatelessWidget{
-  final String storeName;
-  const HomePage({super.key, required this.storeName});
+  final UserRegister storeOwner;
+  const HomePage({super.key, required this.storeOwner});
 
 
  
@@ -15,7 +18,7 @@ drawer: const Drawer(),
  backgroundColor: const Color.fromARGB(255, 209, 216, 225),
 appBar: AppBar(
   backgroundColor: const  Color.fromARGB(255, 20, 58, 74),
-  title: Text(storeName,
+  title: Text(storeOwner.enterpriseName,
             style:const TextStyle(
                          fontSize: 20,
                          color:  Color.fromARGB(255, 216, 222, 220),
@@ -41,8 +44,8 @@ body: SingleChildScrollView(
                 
                 children: [ 
                  
-                 Expanded(child: _inkWell('Categories',3,context,Categoriesmainpage())),
-                 Expanded(child: _inkWell('Items',3,context,Categoriesmainpage()))
+                 Expanded(child: _inkWell('Categories',3,context,Categoriesmainpage(currency: storeOwner.currency))),
+                 Expanded(child: _inkWell('Items',3,context,Itemmainpage(currency: storeOwner.currency,)))
                        
                 ],
               ),
@@ -50,24 +53,24 @@ body: SingleChildScrollView(
                 
                 children: [ 
                         
-                 Expanded(child: _inkWell('Suppliers',3,context,Categoriesmainpage())),
-                 Expanded(child: _inkWell('Clients',3,context,Categoriesmainpage())) 
+                 Expanded(child: _inkWell('Suppliers',3,context,const Supplierlist())),
+                 Expanded(child: _inkWell('Clients',3,context,Categoriesmainpage(currency: storeOwner.currency))) 
                 ],
               ),
              Row(
                 
                 children: [ 
                   
-                 Expanded(child: _inkWell('Purchase',3,context,Categoriesmainpage())),
-                 Expanded(child: _inkWell('Deliveries',3,context,Categoriesmainpage()))     
+                 Expanded(child: _inkWell('Purchase',3,context,Categoriesmainpage(currency: storeOwner.currency))),
+                 Expanded(child: _inkWell('Deliveries',3,context,Categoriesmainpage(currency: storeOwner.currency)))     
                 ],
               ),
               Row(
                 
                 children: [ 
                  
-                 Expanded(child: _inkWell('Bills',3,context,Categoriesmainpage())),
-                 Expanded(child: _inkWell('Historicals',3,context,Categoriesmainpage()))     
+                 Expanded(child: _inkWell('Bills',3,context,Categoriesmainpage(currency: storeOwner.currency))),
+                 Expanded(child: _inkWell('Historicals',3,context,Categoriesmainpage(currency: storeOwner.currency)))     
                 ],
               ),
             ],

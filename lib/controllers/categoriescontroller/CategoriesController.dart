@@ -7,7 +7,6 @@ class Categoriescontroller {
   Category cat = Category(categoryname: '', total: 0, description: '',catId: '');
   User? user = FirebaseAuth.instance.currentUser;
   List<Category> cats=[];
-  bool selectedMod=false;
   final Ref ref;
   Categoriescontroller(this.ref);
 
@@ -44,14 +43,7 @@ class Categoriescontroller {
       return cats.contains(c);
   }
   
-   void updateselectedMod(){
-      if(selectedMod==true){
-        selectedMod=false;
-      }
-      else{
-        selectedMod=true;
-      }
-  }
+
 
   void selectedItems(bool selected,Category c){
     if(selected){

@@ -1,54 +1,53 @@
 
+
 // ignore_for_file: use_key_in_widget_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shopnewversion/Riverpod_providers/categoriesProvider.dart';
-import 'package:shopnewversion/controllers/categoriescontroller/CategoriesController.dart';
-import 'package:shopnewversion/views/categoriesView/categoryWigets.dart';
+import 'package:shopnewversion/Riverpod_providers/itemsProvider.dart';
+import 'package:shopnewversion/controllers/itemController/itemsController.dart';
+import 'package:shopnewversion/views/itemsViews/itemsViewsWidgets.dart';
 
-class Categoriesmainpage extends ConsumerStatefulWidget{
- final String currency;
+class Itemmainpage extends ConsumerStatefulWidget{
+  final String currency;
 
-  const Categoriesmainpage({super.key, required this.currency});
-   @override
-  CategoriesmainpageState createState() => CategoriesmainpageState();
+  const Itemmainpage({super.key, required this.currency});
+  
+  @override
+  ItemmainpageState createState()=> ItemmainpageState();
 }
 
-class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
-  bool selectedMod=false;
-
+class ItemmainpageState extends ConsumerState<Itemmainpage>{
+  bool selectedMode=false;
+  bool searchMode=false;
   @override
   Widget build(BuildContext context) {
-    final categoriesAsyncValue = ref.watch(categoriesListProvider);
-    final controller = ref.watch(categoriesControllerProvider);
-    
-    
+    final itemsAsyncValue = ref.watch(itemsListProvider);
+    final controller = ref.watch(itemsControllerProvider);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 209, 216, 225),
-      appBar:  AppBar(
-            title: const Text("My categories",
+      appBar: AppBar(
+        title: searchMode?
+        const Text('')
+        :const Text("My items",
                              style: TextStyle(
                               color: Colors.white
                              ),),
             backgroundColor:const  Color.fromARGB(255, 20, 58, 74),
-            actions: [
-                  selectedMod
+        actions: [
+                  selectedMode
                   ?TextButton(onPressed:(){ 
                     setState(() {
-                      selectedMod=false;
+                      selectedMode=false;
                       controller.clearItems();
                     });
                   }, 
                   child:const Text('Cancel',style: TextStyle(color: Colors.white),))
-                  :IconButton(onPressed:(){
-                    showSimpleDialogcatAdd(context, ref,widget.currency);
-                  } , 
-                 icon: const Icon(Icons.add ,color: Colors.white ,)),              
-            ],
-          ),
-          
-          body: categoriesAsyncValue.when(
+                  :const Text('')]      
+      ),
+
+      body: itemsAsyncValue.when(
         
         data: (items) {
           return ListView.builder(
@@ -56,29 +55,23 @@ class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
             itemBuilder: (context, index) {
               final item = items[index];
               return ListTile(
-                leading: selectedMod
+                leading: selectedMode
                 ? Checkbox(
-                        value: controller.isSelectedcat(item),
+                        value: controller.isSelectedIt(item),
                         onChanged: (bool? value) {
                              setState(() {
-                              controller.selectedItems(value!, item);
+                              controller.selecteditems(value!, item);
                              });
                         },
                       )
                     : null,
-                     onTap: controller.isSelectedcat(item)
+                     onTap: controller.isSelectedIt(item)
                      ?() {
-                       controller.selectedItems(false, item);
+                       controller.selecteditems(false, item);
                         }
                      :null,
 
-                title:inkWell(item, context,ref,items.length,
-                   (isSelected){
-                      setState(() {
-                  selectedMod = isSelected;
-                });
-                   },widget.currency
-                )   
+                title:inkWellItem(item, context,widget.currency) ,    
               );//
             },
           );
@@ -88,7 +81,8 @@ class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
         
         error: (err, stack) => Center(child: Text('Erreur: $err')),
       ),
-      bottomNavigationBar: controller.cats.isNotEmpty?
+      floatingActionButton: floatButtonItems(context),
+            bottomNavigationBar: controller.items.isNotEmpty?
           BottomAppBar(
               child: TextButton(
                onPressed: ()async{
@@ -106,7 +100,7 @@ class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
                       TextButton(
                                      onPressed: (){
                                         setState(() {
-                                          selectedMod=false;
+                                          selectedMode=false;
                                           controller.clearItems();
                                          });
                                        Navigator.pop(context);
@@ -114,9 +108,9 @@ class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
                                      child:const  Text('no')),
                       TextButton(
                                      onPressed: ()async{
-                                      await   controller.deleteCtgry();
+                                      await   controller.deleteItems();
                                       setState(() {
-                                          selectedMod=false;
+                                          selectedMode=false;
                                           controller.clearItems();
                                          });
                                        Navigator.pop(context);
@@ -133,5 +127,5 @@ class CategoriesmainpageState extends ConsumerState<Categoriesmainpage> {
           :null
     );
   }
-  
+
 }

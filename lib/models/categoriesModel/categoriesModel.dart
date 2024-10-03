@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Item{
@@ -6,16 +8,16 @@ class Item{
  String? description;
  String category;
  double saleprice ;
- double purchaseprice ;
  double quantity;
+ String  image;
  late List<String> suppliers;
  Item({required this.id,
  required this.name,
   required this.description,
  required this.category,
  required this.saleprice,
- required this.purchaseprice,
  required this.quantity,
+ required this.image,
  required this.suppliers});
 
    Map<String, dynamic> toMap() {
@@ -24,23 +26,24 @@ class Item{
      'name':name,
      'description':description,
      'category':category,
-     'price':saleprice,
-     'Pprice':purchaseprice,
+     'saleprice':saleprice,
      'quantity':quantity,
+     'image':image,
      'suppliers':suppliers
     };
   }
 
    factory Item.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Item(
       id: doc['id'],
       name:doc['name'],
       description: doc['description'],
       category: doc['category'],
-      saleprice: doc['price'],
-      purchaseprice: doc['Pprice'],
+      saleprice: doc['saleprice'],
       quantity: doc['quantity'],
-      suppliers:doc['suppliers'],
+      image  : doc['image'],
+      suppliers:List<String>.from(data['suppliers']),
     );
   }
 

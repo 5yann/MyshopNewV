@@ -102,7 +102,7 @@ class RegisterControl {
     // the user database has been perfectly created on firebabse
      Navigator.pushReplacement(
                           context,
-              MaterialPageRoute(builder: (context) =>  HomePage(storeName: userRegister.enterpriseName,)),
+              MaterialPageRoute(builder: (context) =>  HomePage(storeOwner: userRegister)),
             );
 
   } on FirebaseException catch (e) {

@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnewversion/controllers/categoriescontroller/CategoriesController.dart';
 import 'package:shopnewversion/models/categoriesModel/categoriesModel.dart';
+import 'package:shopnewversion/views/itemsViews/itemsPerCategory.dart';
 
-void showSimpleDialogcatAdd(BuildContext context, WidgetRef ref) {
+void showSimpleDialogcatAdd(BuildContext context, WidgetRef ref,String currency) {
   final controller = ref.watch(categoriesControllerProvider);
   final formKey = GlobalKey<FormState>();
   controller.updateuid();
@@ -191,18 +192,18 @@ void showSimpleDialogcatUpdate(BuildContext context, WidgetRef ref, Category cat
   return null;
   }
 
-   InkWell inkWell(Category cat,BuildContext context,WidgetRef ref,int n, Function(bool) mod){
+   InkWell inkWell(Category cat,BuildContext context,WidgetRef ref,int n, Function(bool) mod,String currency){
     
     return InkWell(
           onTap: () {
-            /* Navigator.push(
+             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => nextPage),
-            );*/
+              MaterialPageRoute(builder: (context) => ItemPercategory(category:cat,currency: currency,)),
+            );
 
           },
           onLongPress: () {
-            showOptions(context, ref, cat,n,mod);
+            showOptions(context, ref, cat,n,mod,currency);
           },
           child:    Card(
                shape: RoundedRectangleBorder(
@@ -236,7 +237,7 @@ void showSimpleDialogcatUpdate(BuildContext context, WidgetRef ref, Category cat
     );
   }
 
-  void showOptions(BuildContext context,WidgetRef ref,Category cat,int n, Function(bool) mod){
+  void showOptions(BuildContext context,WidgetRef ref,Category cat,int n, Function(bool) mod,String currency){
        showDialog(
         context: context, 
         builder: (BuildContext context){
@@ -253,7 +254,7 @@ void showSimpleDialogcatUpdate(BuildContext context, WidgetRef ref, Category cat
                  children: [
                       TextButton(onPressed:() async {
                          Navigator.pop(context);
-                         showSimpleDialogcatAdd(context,ref);
+                         showSimpleDialogcatAdd(context,ref,currency);
                         
                       }
                 , child:const Text('New category')),

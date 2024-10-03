@@ -35,7 +35,6 @@ class CategoryDatabaseService {
 
    Future<void> updateItem(String userId,Category cat) async {
     // Update category to DB
-     print('try cat add : ${cat.categoryname}');
     await db.collection('Users').doc(userId).collection('categories').doc(cat.catId).update(cat.toMap());
     print('cat updated : ${cat.categoryname}');
   }
