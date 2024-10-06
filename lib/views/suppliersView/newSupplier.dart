@@ -19,6 +19,7 @@ class NewsupplierformState extends ConsumerState<Newsupplierform>{
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(suppliersControllerProvider);
+    controller.supplier;
      return Scaffold(
       backgroundColor: const Color.fromARGB(255, 209, 216, 225),
       appBar: AppBar(title: const Text("New aupplier",
@@ -76,7 +77,8 @@ class NewsupplierformState extends ConsumerState<Newsupplierform>{
           onPressed: () async {
                 controller.updateSupId();
               if (formKey.currentState?.validate() ??false) {
-                   await controller.newSup();
+                print(controller.supplier.list);
+                   await controller.newSup(controller.supplier);
                    // ignore: use_build_context_synchronously
                    ScaffoldMessenger.of(context).showSnackBar(
                        const SnackBar(content: Text('done',

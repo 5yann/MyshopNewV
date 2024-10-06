@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shopnewversion/Riverpod_providers/supplierProvider.dart';
+import 'package:shopnewversion/controllers/homepage_control/homepage_controller.dart';
 import 'package:shopnewversion/controllers/suppliersController/suplliersContoller.dart';
 import 'package:shopnewversion/views/suppliersView/newSupplier.dart';
 import 'package:shopnewversion/views/suppliersView/suppliersViewWigdets.dart';
@@ -20,8 +21,9 @@ class Supplierlist extends ConsumerStatefulWidget{
 
   @override
   Widget build(BuildContext context) {
-       final suppliersAsyncValue = ref.watch(suppliersListProvider);
+    final suppliersAsyncValue = ref.watch(suppliersListProvider);
     final controller = ref.watch(suppliersControllerProvider);
+    final homeController = ref.watch(homeControllerProvider);
 
    return Scaffold(
     backgroundColor: const  Color.fromARGB(255, 209, 216, 225),
@@ -60,7 +62,8 @@ class Supplierlist extends ConsumerStatefulWidget{
                   children: [
                     SlidableAction(
                       onPressed:(context){
-                         controller.deleteSup();
+                         controller.deleteSup(supplier);
+                         homeController.deleteSupInItems(supplier);
                       } ,
                        backgroundColor: const  Color.fromARGB(255, 20, 58, 74),
                   foregroundColor: Colors.red,

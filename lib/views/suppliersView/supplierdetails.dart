@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopnewversion/controllers/itemController/itemsController.dart';
 import 'package:shopnewversion/controllers/suppliersController/suplliersContoller.dart';
 import 'package:shopnewversion/models/supplier_and_client_models/supplierModel.dart';
+import 'package:shopnewversion/views/suppliersView/addItemstoSupllier.dart';
 import 'package:shopnewversion/views/suppliersView/supplierUpdate.dart';
-import 'package:shopnewversion/views/suppliersView/suppliersViewWigdets.dart';
+
 
 class SupplierDetailsPage extends ConsumerStatefulWidget {
   final Supplier supplier;
@@ -18,7 +20,10 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(suppliersControllerProvider);
+    final control =ref.watch(itemsControllerProvider);
     controller.supplier=widget.supplier;
+  
+    
     return Scaffold(
      backgroundColor:  const  Color.fromARGB(255, 209, 216, 225),
       appBar: AppBar(
@@ -89,7 +94,9 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
            const  Divider(),
 
             // Liste des produits fournis par le fournisseur
-           const  Text(
+           Row(
+            children: [
+              const  Text(
               'Items supplied',
               style: TextStyle(
                 fontSize: 22,
@@ -97,6 +104,31 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
                 color: Colors.black87,
               ),
             ),
+             const SizedBox(width: 50),
+             IconButton(
+              onPressed: () async {
+                var newItem = await Navigator.push(
+                 context,
+                 MaterialPageRoute(builder: (context) => additemstosupllier(controller)),
+                );
+
+             if (newItem != null) {
+                 setState(() {
+                 controller.supplier;
+                 });
+                }
+              }, 
+              icon: const Icon(Icons.add)
+              ),
+              IconButton(
+                onPressed: (){
+                  setState(() {
+                  controller.ischeck();
+                });
+                }, 
+                icon:const  Icon(Icons.delete))
+            ],
+           ),
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
@@ -107,18 +139,32 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
                     margin:const EdgeInsets.symmetric(vertical: 8.0),
                     elevation: 4,
                     child: ListTile(
-                      leading: CircleAvatar(
+                      leading: controller.checkit? Checkbox(
+                        value: controller.isSelectedit(controller.supplier.list[index]), 
+                        onChanged:  (bool? value) {
+                             setState(() {
+                              controller.selectedItem(value!, controller.supplier.list[index]);
+                             });
+                        },)
+                        :CircleAvatar(
                         backgroundColor: Colors.blueAccent,
-                        child: Text(item[0][0].toUpperCase()),
-                      ),
-                      title: Text(
-                        item[0],
+                        child: Text(item[1][0].toUpperCase()),
+                      )
+                      ,
+                                              title: Text(
+                        item[1],
                         style:const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Text('price per unit: \$${item[1]}'),
+                      subtitle: Text('price per unit: \$${item[2]}'),
+                      onTap: controller.isSelectedit(controller.supplier.list[index])
+                     ?() {
+                       controller.selectedItem(false, controller.supplier.list[index]);
+                        }
+                     :null,
+                      
                     ),
                   );
                 },
@@ -127,7 +173,64 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
           ],
         ),
       ),
-      floatingActionButton: floatButtonSupplier(context),
+     bottomNavigationBar: controller.checkit?
+          BottomAppBar(
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed:(){
+                      setState(() {
+                  controller.ischeck();
+                });
+                    }, 
+                    child: const Text('Cancel')),
+                  TextButton(
+               onPressed: ()async{
+             await   showDialog(context: context, builder: (BuildContext context){
+                  return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), 
+                       ),
+                  contentPadding: const EdgeInsets.all(20), 
+                  titlePadding: const EdgeInsets.all(20), 
+                  title: const  Text('Are you sure you want to delete ?'),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                                     onPressed: (){
+                                        setState(() {
+                                           controller.ischeck();
+                                          controller.clearItem();
+                                         
+                                         });
+                                       Navigator.pop(context);
+                                     },
+                                     child:const  Text('no')),
+                      TextButton(
+                                     onPressed: ()async{
+                                      await control.deletesup(controller.list, controller.supplier.id);
+                                      await controller.deleteitemForsup() ; 
+                                      await controller.updateSup();
+                                      setState(() {
+                                          controller.clearItem();
+                                           controller.ischeck();
+                                         });
+                                       // ignore: use_build_context_synchronously
+                                       Navigator.pop(context);
+                                     },
+                                     child:const  Text('yes',style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold))),
+
+                    ],
+                  ),
+                );
+               });     
+               },
+               child:const Text('Delete',style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold)),
+          )  
+                ],
+              ))
+          :null               
     );
   }
   

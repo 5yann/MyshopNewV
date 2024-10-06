@@ -15,7 +15,7 @@ class Supplier {
   required this.contact,
   required this.adress,
   required this.email,
-  required this.list
+  required this.list,
   });
 
   Map<String, dynamic> toMap() {

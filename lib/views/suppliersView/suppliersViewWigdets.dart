@@ -1,14 +1,21 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shopnewversion/controllers/suppliersController/suplliersContoller.dart';
-import 'package:shopnewversion/models/categoriesModel/categoriesModel.dart';
 import 'package:shopnewversion/models/supplier_and_client_models/supplierModel.dart';
-import 'package:shopnewversion/views/categoriesView/categoryWigets.dart';
+import 'package:shopnewversion/views/suppliersView/addItemstoSupllier.dart';
 import 'package:shopnewversion/views/suppliersView/supplierdetails.dart';
 
 SizedBox inkwellSupplierList(BuildContext context, Supplier sup){
+  List<String> list =[];
+    for(var value in sup.list){
+      List<String> s=value.split('-');
+      list.add(s[1]);
+    }
+    
     return SizedBox(
   width: double.infinity, // Prend toute la largeur disponible
   child: InkWell(
@@ -56,7 +63,7 @@ SizedBox inkwellSupplierList(BuildContext context, Supplier sup){
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      sup.list.toString(),
+                      list.toString(),
                       style: const TextStyle(
                         fontSize: 15,
                         color: Color.fromARGB(255, 216, 222, 220),
@@ -95,71 +102,38 @@ SizedBox inkwellSupplierList(BuildContext context, Supplier sup){
 
 }
 
-SpeedDial floatButtonSupplier(BuildContext context){
+SpeedDial floatButtonSupplier(Supplier sup,WidgetRef ref ,BuildContext context,Supllierscontoller control){
   return SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         backgroundColor: Colors.blue,
         overlayColor: Colors.black,
         children: [
           SpeedDialChild(
-            child:const  Icon(Icons.search),
-            backgroundColor: const  Color.fromARGB(255, 20, 58, 74),
+            child:const  Icon(Icons.add),
+            backgroundColor: const Color.fromARGB(255, 29, 155, 209),
             label: 'Add Item',
-            onTap: () {},
+            onTap: () {
+               Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => additemstosupllier(control)),
+              
+            );
+            
+            },
           ),
           SpeedDialChild(
             child:const  Icon(Icons.delete),
             backgroundColor: Colors.red,
             label: 'Delete Item',
-            onTap: () {},
+            onTap: () {
+              
+            },
           ),
           
         ],
       );
 }
 
-/*class AddItemsToSup extends ConsumerWidget {
-  final Supplier supplier;
-  final List<Item>  items ;
-  const AddItemsToSup({super.key, required this.supplier, required this.items});
-
-  @override
-  Widget build(BuildContext context,WidgetRef ref) {
-     final controller = ref.watch(suppliersControllerProvider);
-     final List<String> price =[];
-     return Scaffold(
-      backgroundColor: const  Color.fromARGB(255, 209, 216, 225),
-      appBar: AppBar(),
-      body: ListView.builder(
-        itemCount: controller.items.length,
-        itemBuilder: (context, index){
-          final item = controller.items[index];
-          return ListTile(
-            title: Row(
-              children: [
-                Text(item.name),
-                const SizedBox(width: 20,),
-                SizedBox(
-                  child: TextField(               
-                    decoration: inputdecoration('price'),
-                    onChanged: (val) {
-                    price[index]=val;
-                    }),
-                )
-              ],
-            ),
-          );
-        }
-        ) ,
-     );
-  }
-  
-  
-}*/
 
 
-void AddItemsToSup(Supplier sup,List<Item> items,WidgetRef ref){
-         final controller = ref.watch(suppliersControllerProvider);
-         final List<String> price =[];
 
-}

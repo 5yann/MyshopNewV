@@ -18,12 +18,35 @@ class Itemsdatabaseservices {
           .toList());
 }
 
-  Future<List<Category>> getitems() async {
+  Future<List<Item>> getitems() async {
     // itemlist
     final querySnapshot = await db.collection('Users').doc(user!.uid).collection('items').get();
-    return querySnapshot.docs.map((doc) => Category.fromDocument(doc)).toList();
+    return querySnapshot.docs.map((doc) => Item.fromDocument(doc)).toList();
   }
   
+ Future<Item?> getItemById(String itemId) async {
+  try {
+    // Récupérer le document avec un ID spécifique
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.uid)
+        .collection('items')
+        .doc(itemId) // Utiliser l'ID pour accéder directement au document
+        .get();
+
+    // Vérifier si le document existe
+    if (documentSnapshot.exists) {
+      // Transformer le document en objet Item
+      return Item.fromDocument(documentSnapshot);
+    } else {
+      print('Aucun item trouvé avec cet ID.');
+      return null;
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération de l\'item: $e');
+    return null;
+  }
+}
 
   Future<void> additem(Item newItem) async {
     // Add item to DB

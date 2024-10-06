@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnewversion/Riverpod_providers/itemsProvider.dart';
+import 'package:shopnewversion/controllers/homepage_control/homepage_controller.dart';
 import 'package:shopnewversion/controllers/itemController/itemsController.dart';
 import 'package:shopnewversion/models/categoriesModel/categoriesModel.dart';
 import 'package:shopnewversion/views/itemsViews/itemsViewsWidgets.dart';
@@ -25,6 +26,7 @@ class ItemCatState extends ConsumerState<ItemPercategory>{
   Widget build(BuildContext context) {
     final itemsAsyncValue = ref.watch(itemsListProvider);
     final controller = ref.watch(itemsControllerProvider);
+    final homeController =ref.watch(homeControllerProvider);
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 209, 216, 225),
@@ -114,6 +116,9 @@ class ItemCatState extends ConsumerState<ItemPercategory>{
                                      child:const  Text('no')),
                       TextButton(
                                      onPressed: ()async{
+                                      for(var item in controller.items){
+                                        await homeController.deleteItemInSuppliers(item);
+                                      }
                                       await   controller.deleteItems();
                                       setState(() {
                                           selectedMode=false;

@@ -6,11 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnewversion/Riverpod_providers/itemsProvider.dart';
 import 'package:shopnewversion/models/categoriesModel/categoriesModel.dart';
+import 'package:shopnewversion/models/supplier_and_client_models/supplierModel.dart';
 
 class Itemscontroller {
   Item item = Item(id: '', name: '', description: '', category: '', saleprice: 0.0, quantity: 0.0,image: '', suppliers: []);
     final Ref ref;
     List<Item> items=[];
+    bool checksup=false;
+     List<String> list=[];
   Itemscontroller(this.ref);
  
 
@@ -30,8 +33,46 @@ class Itemscontroller {
    void updateQty(double qty) {
     item.quantity=qty;
   }
-   void updateSuppliers(List<String> sup) {
-    item.suppliers.addAll(sup);
+   void updateSuppliers(String sup) {
+    item.suppliers.add(sup);
+    updateItems();
+  }
+
+      bool supcheck(Supplier sup){
+      bool check=false;
+      for (var value in item.suppliers) {
+        List<String> list = value.split('-');
+        if(list[0]==sup.id && list[1]==sup.name){
+          check= true;
+        }
+      }
+      return check;
+    }
+    
+    Future<void> deleteSupForitem()async{
+       for(var value in list){
+          item.suppliers.remove(value);
+       }
+    }
+
+  Future<void> deletesup(List<String> itemslist,String s) async {
+    for(var val in itemslist){
+       List<String> l = val.split('-');
+       Item? i = await getitem(l[0]);
+       if(i!=null){
+         updateItem(i);
+         for(var value in item.suppliers){
+      List<String> list = value.split('-');
+      if(list[0]==s){
+        item.suppliers.remove(value);
+        updateItems();
+        break;
+      }
+    }
+       }
+       
+    }
+    
   }
 
   Future<String> uploadImage(File imageFile) async {
@@ -87,6 +128,7 @@ class Itemscontroller {
 );
   String s = val.id.replaceAll(RegExp(r'[^0-9]'), '');
   int n = int.parse(s);
+  item.suppliers=[];
     item.id='item${n+1}';
   }
 
@@ -96,7 +138,14 @@ class Itemscontroller {
       return items.contains(i);
   }
   
-
+    void selectedSup(bool selected,String s){
+    if(selected){
+      list.add(s);
+    }
+    else{
+      list.remove(s);
+    }
+  }
 
   void selecteditems(bool selected,Item i){
     if(selected){
@@ -110,10 +159,33 @@ class Itemscontroller {
   void clearItems(){
     items.clear();
   }
+  
+          bool isSelectedsup(String s){
+      return list.contains(s);
+  }
+  
+
+  bool ischeck(){
+    if(checksup == false){
+      checksup=true;
+    }
+    else{
+      checksup=false;
+    }
+    return checksup;
+  }
 
     Future<void> newItem()async{
     ref.read(itemsDatabaseProvider).additem(item);
   }
+  
+   Future<List<Item>> getitems()async{
+    return await ref.read(itemsDatabaseProvider).getitems();
+      }
+
+  Future<Item?> getitem(String s)async{
+    return await ref.read(itemsDatabaseProvider).getItemById(s);
+      }
 
   Future<void> deleteItems()async{
      for (Item itm in items) {

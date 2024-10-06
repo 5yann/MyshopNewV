@@ -7,7 +7,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnewversion/controllers/itemController/itemsController.dart';
+import 'package:shopnewversion/controllers/suppliersController/suplliersContoller.dart';
 import 'package:shopnewversion/models/categoriesModel/categoriesModel.dart';
+import 'package:shopnewversion/views/itemsViews/addsuptoItem.dart';
 import 'package:shopnewversion/views/itemsViews/itemsViewsWidgets.dart';
 
 class ItemsDetailsPage extends ConsumerStatefulWidget {
@@ -27,7 +29,9 @@ class ItemsDetailsPageState extends ConsumerState<ItemsDetailsPage>{
   Widget build(BuildContext context) {
     Item it=widget.item;
     final controller = ref.watch(itemsControllerProvider);
+    final control = ref.watch(suppliersControllerProvider);
      controller.updateItem(it);
+     
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 209, 216, 225), 
       appBar: AppBar(
@@ -102,7 +106,8 @@ class ItemsDetailsPageState extends ConsumerState<ItemsDetailsPage>{
             const SizedBox(height: 30),
 
             // suppliers
-            const Text(
+          Row(children: [
+              const Text(
               'Suppliers',
               style: TextStyle(
                 fontSize: 20,
@@ -110,6 +115,28 @@ class ItemsDetailsPageState extends ConsumerState<ItemsDetailsPage>{
                 color: Colors.teal,
               ),
             ),
+            const SizedBox(width: 50),
+             IconButton(
+              onPressed: () async {
+               await Navigator.push(
+                 context,
+                 MaterialPageRoute(builder: (context) => addsupllierstoItem(controller)),
+                );
+                 setState(() {
+                 controller.item;
+                 });
+                
+              }, 
+              icon: const Icon(Icons.add)
+              ),
+              IconButton(
+                onPressed: (){
+                 setState(() {
+                  controller.ischeck();
+                });
+                }, 
+                icon:const  Icon(Icons.delete))
+          ],),
             const SizedBox(height: 10),
 
             // Supplierslist
@@ -126,13 +153,20 @@ class ItemsDetailsPageState extends ConsumerState<ItemsDetailsPage>{
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ListTile(
-                    leading:  IconButton(onPressed: () {
+                    leading:controller.checksup? Checkbox(
+                        value: controller.isSelectedsup(controller.item.suppliers[index]), 
+                        onChanged:  (bool? value) {
+                             setState(() {
+                              controller.selectedSup(value!, controller.item.suppliers[index]);
+                             });
+                        },)
+                        :  IconButton(onPressed: () {
                       //create a purchase here
                     },
                       icon:const  Icon(Icons.local_shipping,color: Colors.teal), 
                       ),
-                    title: Text(supplier[0]), // get the supplier first
-                    subtitle: Text('Purchase Price: ${widget.currency} ${supplier[1]}'),
+                    title: Text(supplier[1]), // get the supplier first
+                    subtitle: Text('Purchase Price: ${widget.currency} ${supplier[2]}'),
                   ),
                 );
               },
@@ -147,6 +181,64 @@ class ItemsDetailsPageState extends ConsumerState<ItemsDetailsPage>{
                   controller.item;
                 });
                    }),
+           bottomNavigationBar: controller.checksup?
+          BottomAppBar(
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed:(){
+                      setState(() {
+                  controller.ischeck();
+                });
+                    }, 
+                    child: const Text('Cancel')),
+                  TextButton(
+               onPressed: ()async{
+             await   showDialog(context: context, builder: (BuildContext context){
+                  return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), 
+                       ),
+                  contentPadding: const EdgeInsets.all(20), 
+                  titlePadding: const EdgeInsets.all(20), 
+                  title: const  Text('Are you sure you want to delete ?'),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                                     onPressed: (){
+                                        setState(() {
+                                           controller.ischeck();
+                                          controller.list.clear();
+                                         
+                                         });
+                                       Navigator.pop(context);
+                                     },
+                                     child:const  Text('no')),
+                      TextButton(
+                                     onPressed: ()async{
+                                      await control.deleteit(controller.list, controller.item.id);
+                                      await controller.deleteSupForitem() ; 
+                                      await controller.updateItems();
+                                      setState(() {
+                                            controller.list.clear();
+                                           controller.ischeck();
+                                         });
+                                       // ignore: use_build_context_synchronously
+                                       Navigator.pop(context);
+                                     },
+                                     child:const  Text('yes',style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold))),
+
+                    ],
+                  ),
+                );
+               });     
+               },
+               child:const Text('Delete',style: TextStyle(color: Colors.redAccent,fontWeight: FontWeight.bold)),
+          )  
+                ],
+              ))
+          :null             
     );
   }
 }

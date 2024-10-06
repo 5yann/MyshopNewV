@@ -9,7 +9,9 @@ class  Supllierscontoller {
 
       final Ref ref;
     List<Supplier> suppliers=[];
+    List<String> list=[];
     List<Item> items=[];
+    bool checkit=false;
     Supllierscontoller(this.ref);
 
 
@@ -25,12 +27,31 @@ class  Supllierscontoller {
       void updateSupEmail(String mail) {
        supplier.email=mail;
     }
-      void updateSupItems(List<String> itemsid, List<double> prices) {
-       for(int i=0;i<itemsid.length;i++){
-        String s1=prices[i].toString();
-        supplier.list.add('${itemsid[i]}-$s1');
-       }
+      Future<void> updateSupItems(Map<Item, double> items) async{
+       items.forEach((item,value){
+         supplier.list.add('${item.id}-${item.name}-${value.toString()}');
+       });
+       updateSup();
     }
+
+    bool itemcheck(Item item){
+      bool check=false;
+      for (var value in supplier.list) {
+        List<String> list = value.split('-');
+        if(list[0]==item.id && list[1]==item.name){
+          check= true;
+        }
+      }
+      return check;
+    }
+
+    Future<void> deleteitemForsup()async{
+       for(var value in list){
+          supplier.list.remove(value);
+       }
+       updateSup();
+    }
+
       void updateSupId() {
       final supplierssAsyncValue = ref.watch(suppliersListProvider);
     Supplier val = supplierssAsyncValue.maybeWhen(
@@ -42,18 +63,21 @@ class  Supllierscontoller {
     contact: '',
     adress: '',
     email: '',
-    list: []),
+    list: [],
+  ),
      orElse :()=> Supplier(
     id: 'sup0',
     name: '',
     contact: '',
     adress: '',
     email: '',
-    list: []) 
+    list: [],
+    ) 
   
 );
   String s = val.id.replaceAll(RegExp(r'[^0-9]'), '');
   int n = int.parse(s);
+    supplier.list=[];
     supplier.id='sup${n+1}';
     }
     
@@ -63,7 +87,9 @@ class  Supllierscontoller {
       return suppliers.contains(s);
   }
   
-
+  void takeSup(Supplier sup){
+     supplier=sup;
+  }
 
   void selectedItems(bool selected,Supplier s){
     if(selected){
@@ -78,14 +104,77 @@ class  Supllierscontoller {
     suppliers.clear();
   }
 
-       Future<void> newSup()async{
-    ref.read(suppliersDatabaseProvider).addSupplier(supplier);
+        bool isSelectedit(String s){
+      return list.contains(s);
+  }
+  
+
+  bool ischeck(){
+    if(checkit == false){
+      checkit=true;
+    }
+    else{
+      checkit=false;
+    }
+    return checkit;
   }
 
-  Future<void> deleteSup()async{
-     for (Supplier itm in suppliers) {
-           ref.read(suppliersDatabaseProvider).removeSupplier(itm);
-       } 
+  void selectedItem(bool selected,String s){
+    if(selected){
+      list.add(s);
+    }
+    else{
+      list.remove(s);
+    }
+  }
+
+  void clearItem(){
+    list.clear();
+  }
+
+    Future<void> deleteit(List<String> itemslist,String s) async {
+    for(var val in itemslist){
+       List<String> l = val.split('-');
+       Supplier? i = await getSup(l[0]);
+       if(i!=null){
+        
+         getsup(i);
+         print(supplier.id);
+         for(var value in supplier.list){
+      List<String> list = value.split('-');
+      if(list[0]==s){
+        supplier.list.remove(value);
+        updateSup();
+        break;
+      }
+    }
+       }
+       
+    }
+    
+  }
+
+    Future<Supplier?> getSup(String s)async{
+    return await ref.read(suppliersDatabaseProvider).getSupById(s);
+      }
+
+  void getsup(Supplier s){
+    supplier=s;
+  }
+
+  Future<List<Supplier>>  getSuppliersList() async {
+    List<Supplier>  sups = await ref.read(suppliersDatabaseProvider).getSuppliers();
+    return sups;
+  }
+
+       Future<void> newSup(Supplier sup)async{
+    ref.read(suppliersDatabaseProvider).addSupplier(sup);
+  }
+
+  Future<void> deleteSup(Supplier s)async{
+     
+           ref.read(suppliersDatabaseProvider).removeSupplier(s);
+       
     print('deleted');
   }
 

@@ -23,7 +23,30 @@ class SuppliersDatabaseservices {
     final querySnapshot = await db.collection('Users').doc(user!.uid).collection('suppliers').get();
     return querySnapshot.docs.map((doc) => Supplier.fromDocument(doc)).toList();
   }
-  
+
+   Future<Supplier?> getSupById(String supId) async {
+  try {
+    // Récupérer le document avec un ID spécifique
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.uid)
+        .collection('suppliers')
+        .doc(supId) // Utiliser l'ID pour accéder directement au document
+        .get();
+
+    // Vérifier si le document existe
+    if (documentSnapshot.exists) {
+      // Transformer le document en objet Item
+      return Supplier.fromDocument(documentSnapshot);
+    } else {
+      print('Aucun sup trouvé avec cet ID.');
+      return null;
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération de l\'item: $e');
+    return null;
+  }
+} 
 
   Future<void> addSupplier(Supplier newItem) async {
     // Add supplier to DB
@@ -40,6 +63,7 @@ class SuppliersDatabaseservices {
 
   Future<void> removeSupplier(Supplier item) async {
     // delete supplier to DB
+    print('delete : ${item.id}');
     await db.collection('Users').doc(user!.uid).collection('suppliers').doc(item.id).delete();
     print('delete : ${item.name}');
   }
