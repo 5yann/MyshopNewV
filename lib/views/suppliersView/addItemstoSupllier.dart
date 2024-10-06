@@ -18,7 +18,7 @@ class additemstosupllier extends ConsumerStatefulWidget {
 }
 
 class _ItemsSelectionPageState extends ConsumerState<additemstosupllier> {
-  // Map pour stocker les items sélectionnés et leurs valeurs
+  
   Map<Item, double> selectedItemsWithValues = {};
 
   @override
@@ -48,10 +48,10 @@ class _ItemsSelectionPageState extends ConsumerState<additemstosupllier> {
                   onChanged: (isChecked) {
                     setState(() {
                       if (isChecked == true) {
-                        // Ajouter un champ de saisie de valeur quand l'item est sélectionné
-                        selectedItemsWithValues[item] = 0.0; // Valeur initiale
+                        
+                        selectedItemsWithValues[item] = 0.0; 
                       } else {
-                        // Retirer l'item s'il est décoché
+                        
                         selectedItemsWithValues.remove(item);
                       }
                     });
@@ -67,13 +67,13 @@ class _ItemsSelectionPageState extends ConsumerState<additemstosupllier> {
                           });
                         },
                       )
-                    : null, // Champ de texte affiché uniquement si l'item est sélectionné
+                    : null, 
               );
             },
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              // Valider et soumettre les items sélectionnés avec leurs valeurs
+             
               print(selectedItemsWithValues);
               selectedItemsWithValues.forEach((item,value){
                 controller1.updateItem(item);

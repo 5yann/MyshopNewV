@@ -1,7 +1,8 @@
 
+// ignore_for_file: library_private_types_in_public_api, camel_case_types
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shopnewversion/Riverpod_providers/itemsProvider.dart';
 import 'package:shopnewversion/Riverpod_providers/supplierProvider.dart';
 import 'package:shopnewversion/controllers/itemController/itemsController.dart';
 import 'package:shopnewversion/controllers/suppliersController/suplliersContoller.dart';
@@ -19,7 +20,7 @@ class addsupllierstoItem extends ConsumerStatefulWidget {
 }
 
 class _SupplierSelectionPageState extends ConsumerState<addsupllierstoItem> {
-  // Map pour stocker les items sélectionnés et leurs valeurs
+ 
   Map<Supplier, double> selectedItemsWithValues = {};
 
   @override
@@ -49,10 +50,10 @@ class _SupplierSelectionPageState extends ConsumerState<addsupllierstoItem> {
                   onChanged: (isChecked) {
                     setState(() {
                       if (isChecked == true) {
-                        // Ajouter un champ de saisie de valeur quand l'item est sélectionné
-                        selectedItemsWithValues[item] = 0.0; // Valeur initiale
+                        
+                        selectedItemsWithValues[item] = 0.0; 
                       } else {
-                        // Retirer l'item s'il est décoché
+                        
                         selectedItemsWithValues.remove(item);
                       }
                     });
@@ -68,13 +69,13 @@ class _SupplierSelectionPageState extends ConsumerState<addsupllierstoItem> {
                           });
                         },
                       )
-                    : null, // Champ de texte affiché uniquement si l'item est sélectionné
+                    : null, 
               );
             },
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              // Valider et soumettre les items sélectionnés avec leurs valeurs
+              
               print(selectedItemsWithValues);
               
               selectedItemsWithValues.forEach((item,value){

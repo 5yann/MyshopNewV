@@ -17,7 +17,7 @@ SizedBox inkwellSupplierList(BuildContext context, Supplier sup){
     }
     
     return SizedBox(
-  width: double.infinity, // Prend toute la largeur disponible
+  width: double.infinity, 
   child: InkWell(
     onTap: () {
       Navigator.push(

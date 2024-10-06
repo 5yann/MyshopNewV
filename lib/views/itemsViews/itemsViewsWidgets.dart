@@ -147,7 +147,7 @@ InkWell inkWellItem(Item item,BuildContext context,String currency){
         height: 150, 
         child: Row(
           children: [
-            // Image du produit
+            
             const SizedBox(width: 10), 
             ClipRRect(
               borderRadius: BorderRadius.circular(10), 
@@ -159,7 +159,7 @@ InkWell inkWellItem(Item item,BuildContext context,String currency){
               ),
             ),
             const SizedBox(width: 10), 
-            // Informations sur le produit
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,25 +169,25 @@ InkWell inkWellItem(Item item,BuildContext context,String currency){
                     item.name,
                     style: const TextStyle(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold, // Texte en gras
+                      fontWeight: FontWeight.bold, 
                       color: Color.fromARGB(255, 216, 222, 220),
                     ),
                   ),
-                  const SizedBox(height: 5), // Espace entre le nom et la description
+                  const SizedBox(height: 5), 
                   Text(
                     item.description!,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color.fromARGB(255, 216, 222, 220),
                     ),
-                    overflow: TextOverflow.ellipsis, // Limite la description si trop longue
+                    overflow: TextOverflow.ellipsis, 
                   ),
                   const SizedBox(height: 10),
-                  // Quantité et prix
+                  
                   Row(
                     children: [
                       const Icon(
-                        Icons.inventory, // Icône pour la quantité
+                        Icons.inventory, 
                         color: Colors.white70,
                         size: 16,
                       ),
@@ -205,7 +205,7 @@ InkWell inkWellItem(Item item,BuildContext context,String currency){
                   Row(
                     children: [
                       const Icon(
-                        Icons.price_check, // Icône pour le prix
+                        Icons.price_check,
                         color: Colors.white70,
                         size: 16,
                       ),

@@ -46,7 +46,7 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section d'en-tête avec nom, email, contact et adresse
+            
             Text(
               controller.supplier.name,
               style:const TextStyle(
@@ -93,7 +93,7 @@ class SupplierDetailsPageState extends ConsumerState<SupplierDetailsPage>{
 
            const  Divider(),
 
-            // Liste des produits fournis par le fournisseur
+           
            Row(
             children: [
               const  Text(
